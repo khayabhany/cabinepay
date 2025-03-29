@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CabinePay - Recharge mobile instantanée et services de transfert">
+    <meta property="og:title" content="CabinePay - Recharge Mobile">
+    <meta property="og:image" content="img/logo.png">
+    <title>CabinePay - Recharge Mobile</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="shortcut icon" href="img/logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Styles existants conservés */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #2c3e50;
+            --primary-color: #2ecc71;
+            --secondary-color: #3498db;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #2c3e50;
+            --text-color: #ecf0f1;
+            --primary-color: #1abc9c;
+            --secondary-color: #16a085;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Arial', sans-serif; 
+        }
+
+        body { 
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container { 
+            max-width: 500px; 
+            margin: 0 auto;
+            padding: 20px; 
+            text-align: center;
+        }
+
+        .logo-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 3px solid var(--primary-color);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .service-menu {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .service-btn {
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .service-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+        }
+
+        .about-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 500px;
+            z-index: 9999;
+        }
+
+        .close-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background-color: #c0392b;
+        }
+
+        .about-btn {
+            background-color: #f39c12;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .about-btn:hover {
+            background-color: #e67e22;
+        }
+
+        .whatsapp-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25D366;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .whatsapp-button:hover {
+            transform: scale(1.1);
+        }
+
+        .whatsapp-button img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .operator-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-color);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+            animation: scaleUp 0.3s ease;
+        }
+
+        .uba-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-color);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .recharge-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-color);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 1000;
+            width: 90%;
+            max-width: 600px;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .operators-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding: 15px;
+        }
+
+        .operator-logo {
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            border-radius: 12px;
+            padding: 5px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .uba-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .uba-option {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .uba-option img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .payment-method {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .payment-method img {
+            width: 100px;
+            height: 60px;
+            object-fit: contain;
+            border-radius: 8px;
+            padding: 5px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .operator-logo:hover,
+        .uba-option:hover,
+        .payment-method:hover {
+            transform: scale(1.1);
+        }
+
+        .share-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .share-main-btn {
+            background: #3498db;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .share-main-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .share-submenu {
+            position: absolute;
+            right: 0;
+            top: 60px;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .share-submenu.show {
+            display: flex;
+            animation: slideDown 0.3s ease;
+        }
+
+        .share-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #2c3e50;
+            text-decoration: none;
+        }
+
+        .share-item:hover {
+            background: #f5f6fa;
+        }
+
+        #backgroundMusic {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .volume-control {
+            position: fixed;
+            bottom: 70px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .volume-slider {
+            width: 100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #backgroundMusic:hover + .volume-slider,
+        .volume-slider:hover {
+            opacity: 1;
+        }
+
+        @keyframes scaleUp {
+            from { transform: translate(-50%, -50%) scale(0); }
+            to { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .service-btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+            .payment-methods {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo CabinePay">
+        </div>
+        
+        <h1>CabinePay</h1>
+        <p style="color: #7f8c8d; margin-bottom: 25px;">Recharge instantanée en 30 secondes ⚡</p>
+
+        <div class="service-menu">
+            <button class="service-btn" onclick="showServicePanel('credit')">💰 Achat du Crédit</button>
+            <button class="service-btn" onclick="showServicePanel('internet')">📡 Achat de Pass Internet</button>
+            <button class="service-btn" onclick="showServicePanel('minutes')">📞 Achat de Minutes Appel</button>
+            <button class="service-btn" onclick="alert('Service en développement !')">📲 Transfert inter-mobile Money</button>
+            <button class="service-btn" onclick="showUbaPanel()">💳 Achat et Rechargement Carte UBA</button>
+            <button class="service-btn" onclick="showRechargePanel()">🎟️ Rachat et recharge de Carte</button>
+            <button class="service-btn" onclick="openDeliveryWhatsApp()">📦 Livraison colis Abidjan - Paris</button>
+            <button class="about-btn" onclick="toggleAbout()">À propos</button>
+        </div>
+    </div>
+
+    <!-- Pop-up À propos -->
+    <div class="about-container" id="aboutContainer">
+        <h2>À propos de CabinePay</h2>
+        <p>CabinePay est une plateforme innovante qui permet à ses utilisateurs d’effectuer diverses opérations de recharge et de services financiers <strong>sans se déplacer</strong>. Grâce à notre technologie de pointe, vous pouvez facilement <strong>recharger votre crédit</strong>, <strong>acheter des passes internet</strong>, <strong>effectuer des transferts d'argent</strong>, et bien plus, tout cela depuis le confort de votre domicile ou n'importe où ailleurs.</p>
+        <p><strong>Nos services :</strong></p>
+        <ul>
+            <li>Recharge mobile instantanée</li>
+            <li>Pass Internet et minutes d'appel</li>
+            <li>Transfert d'argent sécurisé</li>
+            <li>Services complémentaires : Recharge de cartes UBA, achat de cartes de recharge, livraison de colis Abidjan-Paris, etc.</li>
+        </ul>
+        <p><strong>Pourquoi choisir CabinePay ?</strong></p>
+        <ul>
+            <li>Simplicité d'utilisation</li>
+            <li>Accessibilité à tout moment et en tout lieu</li>
+            <li>Service client réactif et disponible</li>
+        </ul>
+        <button class="close-btn" onclick="toggleAbout()">Fermer</button>
+    </div>
+
+    <!-- Panneaux -->
+    <div class="overlay" id="overlay" onclick="closePanels()"></div>
+    
+    <div class="operator-panel" id="operatorPanel">
+        <h3>Sélectionnez votre opérateur</h3>
+        <div class="operators-container">
+            <img src="img/orange_ci.png" class="operator-logo" onclick="handleOperatorSelect('orange')" alt="Orange CI">
+            <img src="img/moov_ci.png" class="operator-logo" onclick="handleOperatorSelect('moov')" alt="Moov CI">
+            <img src="img/mtn_ci.png" class="operator-logo" onclick="handleOperatorSelect('mtn')" alt="MTN CI">
+        </div>
+    </div>
+
+    <div class="uba-panel" id="ubaPanel">
+        <h3>Services UBA</h3>
+        <div class="uba-options">
+            <div class="uba-option" onclick="handleUbaAction('action')">
+                <img src="img/uba_action.png" alt="Action UBA">
+                <p>Action Spécifique</p>
+            </div>
+            <div class="uba-option" onclick="handleUbaAction('recharge')">
+                <img src="img/uba_recharge.png" alt="Rechargement">
+                <p>Recharger ma carte</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="recharge-panel" id="rechargePanel">
+        <h3>Méthodes de recharge</h3>
+        <div class="payment-methods">
+            <div class="payment-method" onclick="selectPaymentMethod('pcs')">
+                <img src="img/pcs.png" alt="PCS">
+                <p>PCS</p>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('transcash')">
+                <img src="img/transcash.png" alt="Transcash">
+                <p>Transcash</p>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('paypal')">
+                <img src="img/paypal.png" alt="PayPal">
+                <p>PayPal</p>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('neosurf')">
+                <img src="img/neosurf.png" alt="Neosurf">
+                <p>Neosurf</p>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('postpay')">
+                <img src="img/postpay.png" alt="PostePay">
+                <p>PostePay</p>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('bitnovo')">
+                <img src="img/bitnovo.png" alt="Bitnovo">
+                <p>Bitnovo</p>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('bitcoin')">
+                <img src="img/bitcoin.png" alt="Bitcoin">
+                <p>Bitcoin</p>
+            </div>
+            <div class="payment-method" onclick="selectPaymentMethod('cryptonow')">
+                <img src="img/cryptonow.png" alt="CryptoNow">
+                <p>CryptoNow</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contrôle musique -->
+    <div class="volume-control">
+        <div id="backgroundMusic" onclick="toggleMusic()">
+            <i class="fas fa-music" style="color: white;"></i>
+            <audio id="bgMusic" loop>
+                <source src="sons/background_music.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+        <input type="range" class="volume-slider" min="0" max="1" step="0.1" value="0.5" oninput="adjustVolume(this.value)">
+    </div>
+
+    <!-- Menu Partage -->
+    <div class="share-container">
+        <div class="share-main-btn" onclick="toggleShareMenu()">
+            <i class="fas fa-share-alt" style="color: white; font-size: 1.2rem;"></i>
+        </div>
+        <div class="share-submenu" id="shareMenu">
+            <a href="https://khayabhany.github.io/cabinepay/" class="share-item" onclick="shareOn('facebook')">
+                <i class="fab fa-facebook" style="color: #1877f2;"></i> Facebook
+            </a>
+            <a href="https://khayabhany.github.io/cabinepay/" class="share-item" onclick="shareOn('twitter')">
+                <i class="fab fa-twitter" style="color: #1da1f2;"></i> Twitter
+            </a>
+            <a href="https://khayabhany.github.io/cabinepay/" class="share-item" onclick="shareOn('whatsapp')">
+                <i class="fab fa-whatsapp" style="color: #25d366;"></i> WhatsApp
+            </a>
+            <a href="sms:?body=Découvrez CabinePay! https://www.cabinepay.ci" class="share-item">
+                <i class="fas fa-sms" style="color: #3498db;"></i> SMS
+            </a>
+        </div>
+    </div>
+
+    <!-- Bouton WhatsApp -->
+    <a href="https://wa.me/2250788642619?text=Bonjour%20CabinePay%2C%20j%27aimerais%20avoir%20plus%20d%27informations." 
+       class="whatsapp-button" 
+       target="_blank" 
+       aria-label="Contacter CabinePay sur WhatsApp - Contactez-nous">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">  
+    </a>
+
+    <!-- Sons -->
+    <audio id="orangeSound" src="sons/orange_jingle.mp3"></audio>
+    <audio id="moovSound" src="sons/moov_jingle.mp3"></audio>
+    <audio id="mtnSound" src="sons/mtn_jingle.mp3"></audio>
+    <audio id="ubaSound" src="sons/uba_jingle.mp3"></audio>
+
+    <script>
+        // Gestion audio
+        const sounds = {
+            orange: document.getElementById('orangeSound'),
+            moov: document.getElementById('moovSound'),
+            mtn: document.getElementById('mtnSound'),
+            uba: document.getElementById('ubaSound'),
+            background: document.getElementById('bgMusic')
+        };
+
+        // Lecture automatique après interaction
+        document.addEventListener('click', function initialPlay() {
+            try {
+                sounds.background.volume = 0.5;
+                sounds.background.play();
+            } catch (e) {
+                // Gestion des bloqueurs de autoplay
+            }
+            document.removeEventListener('click', initialPlay);
+        }, {once: true});
+
+        function adjustVolume(volume) {
+            sounds.background.volume = volume;
+        }
+
+        function toggleMusic() {
+            sounds.background.paused ? sounds.background.play() : sounds.background.pause();
+        }
+
+        function showRechargePanel() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('rechargePanel').style.display = 'block';
+        }
+
+        function selectPaymentMethod(method) {
+            alert('Méthode sélectionnée : ' + method.toUpperCase());
+            closePanels();
+        }
+
+        function toggleAbout() {
+            const aboutContainer = document.getElementById("aboutContainer");
+            aboutContainer.style.display = aboutContainer.style.display === "block" ? "none" : "block";
+        }
+
+        function showServicePanel(service) {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('operatorPanel').style.display = 'block';
+            sounds[service]?.play();
+        }
+
+        function showUbaPanel() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('ubaPanel').style.display = 'block';
+            sounds.uba.play();
+        }
+
+        function handleOperatorSelect(operator) {
+            sounds[operator].play();
+            closePanels();
+            alert(`Opérateur ${operator.toUpperCase()} sélectionné !`);
+        }
+
+        function handleUbaAction(action) {
+            sounds.uba.play();
+            closePanels();
+            alert(`Action UBA : ${action === 'recharge' ? 'Rechargement' : 'Action spécifique'}`);
+        }
+
+        function openDeliveryWhatsApp() {
+            const message = encodeURIComponent(
+                "Merci d'avoir choisi CabinePay !\n" +
+                "Parlez-nous de votre colis :\n" +
+                "- Contenu : \n" +
+                "- Poids : \n" +
+                "- Destinataire :"
+            );
+            window.open(`https://wa.me/2250788642619?text=${message}`, '_blank');
+        }
+
+        function closePanels() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('operatorPanel').style.display = 'none';
+            document.getElementById('ubaPanel').style.display = 'none';
+            document.getElementById('rechargePanel').style.display = 'none';
+        }
+
+        function toggleShareMenu() {
+            document.getElementById('shareMenu').classList.toggle('show');
+        }
+
+        function shareOn(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const text = encodeURIComponent("Découvrez CabinePay - Recharge instantanée en 30 secondes !");
+            
+            const shareUrls = {
+                facebook: `https://www.facebook.com/sharer.php?u=${url}`,
+                twitter: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+                whatsapp: `https://wa.me/?text=${text}%20${url}`
+            };
+
+            window.open(shareUrls[platform], '_blank');
+        }
+
+        // Gestion des clics
+        window.onclick = function(event) {
+            const aboutContainer = document.getElementById("aboutContainer");
+            const overlay = document.getElementById("overlay");
+            
+            if (event.target === aboutContainer) aboutContainer.style.display = "none";
+            if (event.target === overlay) closePanels();
+            if (!event.target.closest('.share-container')) {
+                document.getElementById('shareMenu').classList.remove('show');
+            }
+        };
+    </script>
+</body>
+</html>
