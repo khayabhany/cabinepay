@@ -1,0 +1,15 @@
+{
+    "name": "CabinePay",
+    "short_name": "CabinePay",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#2ecc71",
+    "theme_color": "#2ecc71",
+    "icons": [
+        {
+            "src": "img/logo.png",
+            "sizes": "192x192 512x512",
+            "type": "image/png"
+        }
+    ]
+}
